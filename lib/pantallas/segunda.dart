@@ -10,7 +10,7 @@ class Secundaria extends StatelessWidget {
   //Controlador del TextField para maniupular su texto
   TextEditingController _cajaTexto = TextEditingController();
 
-  //Permisos de ubicación (De la documentación de pub.dev)
+  //Permisos de ubicación y obtencion de las coordenadas (De la documentación de pub.dev)
   Future<Position> _determinePosition() async {
     bool serviceEnabled;
     LocationPermission permission;
@@ -36,25 +36,6 @@ class Secundaria extends StatelessWidget {
     return await Geolocator.getCurrentPosition();
   }
 
-  //Configuración de precisión de ubicación
-  final LocationSettings locationSettings = LocationSettings(
-    accuracy: LocationAccuracy.high,
-    distanceFilter: 100,
-  );
-
-  //Método para obtener la ubicacción
-  void obtenerUbicacion() async {
-    //Obtener la ubicación con la precisión configurada
-    Position position = await Geolocator.getCurrentPosition(locationSettings: locationSettings);
-
-    //Asignamos el valor de las coordenadas a su variable usando toString para obtener el estado en cadena
-    _corX = position.longitude.toString();
-    _corY = position.latitude.toString();
-
-    //Cambio de la cadena de texto del textfield por el valor de las coordenadas usando toString para obtener el estado en cadena
-    _cajaTexto.text = "Latitud : " + _corY + " Longitud : " + _corX;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -76,7 +57,11 @@ class Secundaria extends StatelessWidget {
               padding: EdgeInsets.all(10),
             ),
             ElevatedButton(
-                onPressed: obtenerUbicacion,
+                onPressed: (){
+                  _determinePosition().then((coordenadas){ //Obtenemos y pintamos sus coordenadas (usando el estado en string del objeto)
+                    _cajaTexto.text = "Latitud " + coordenadas.latitude.toString() + " Longitud " + coordenadas.longitude.toString();
+                  });
+                },
                 child: Text("Obtener mis coordenadas"))
           ],
         ),
