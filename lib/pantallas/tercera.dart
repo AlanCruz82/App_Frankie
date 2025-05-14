@@ -11,17 +11,19 @@ class Tercera extends StatefulWidget {
 
 //Herencia del Stateful
 class TerceraPantallaState extends State<Tercera> {
-  Color colorElegido = Colors.blue;
+  Color _color = Colors.blue; //Color por defecto
+  int _colorElegido = 0;
   TextEditingController _controladorTextoCita = TextEditingController();
   DateTime _incioCita = DateTime.now();
   DateTime _finalCita = DateTime.now();
-  bool? _todoDia = true;
+  bool? _todoDia = false;
 
-  void agendarCita(context, colorSeleccionado, encabezadoCita, fechaInicio, fechaFin){
+  void agendarCita(context, colorSeleccionado, encabezadoCita, fechaInicio, fechaFin, todoElDia){
     print("Titulo cita " + encabezadoCita);
     print("Inicio cita " + fechaInicio.toString());
     print("Final cita " + fechaFin.toString());
-    print("Color " + colorSeleccionado);
+    print("Color " + colorSeleccionado.toString());
+    print("Todo el día " + todoElDia.toString());
     Navigator.pop(context, 'OK');
   }
 
@@ -40,6 +42,7 @@ class TerceraPantallaState extends State<Tercera> {
           builder: (BuildContext context) => AlertDialog(
             title: const Text('Agenda tu cita'),
             content: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 TextField(
                   controller: _controladorTextoCita,
@@ -86,11 +89,15 @@ class TerceraPantallaState extends State<Tercera> {
                       builder: (BuildContext context) => AlertDialog(
                         content:
                         ColorPicker(
-                          // Use the screenPickerColor as start and active color.
-                          color: colorElegido,
-                          // Update the screenPickerColor using the callback.
-                          onColorChanged: (Color color) =>
-                              setState(() => colorElegido = color),
+                          //Color por defecto azul
+                          color: _color,
+                          //Cuando cambie el color, dejamos ese color y almacenamos su valor en 32bits
+                          onColorChanged: (Color color){
+                            setState(() {
+                              _color = color;
+                              _colorElegido = _color.value32bit;
+                            });
+                          }
                         ),
                         actions: [
                           TextButton(
@@ -106,14 +113,21 @@ class TerceraPantallaState extends State<Tercera> {
                   padding: EdgeInsets.all(10),
                 ),
                 Text("¿Todo el día?"),
-                Checkbox(
-                    value: _todoDia,
-                    onChanged: (bool? value){
-                      print(_todoDia);
-                      setState(() {
-                        _todoDia = value!; //Si se selecciono o quito todo el dia asignamos su valor contrario
-                      });
-                    })
+                //Con StateBuilder podemos generar un propio StateFul para el checkbox cuando cambia de valor
+                StatefulBuilder(builder: (BuildContext context, StateSetter setDialogState){
+                  return Column(
+                   children: [
+                     Checkbox(
+                       value: _todoDia,
+                       onChanged: (bool? value) {
+                         setDialogState(() {
+                           _todoDia = value ?? false;
+                         });
+                       },
+                     ),
+                   ],
+                  );
+                })
               ],
             ),
             actions: [
@@ -122,7 +136,8 @@ class TerceraPantallaState extends State<Tercera> {
                 child: const Text('Cancelar'),
               ),
               TextButton(
-                onPressed: () => agendarCita(context, ColorTools.colorCode(colorElegido), _controladorTextoCita.text, _incioCita, _finalCita),
+                onPressed: () => agendarCita(context, _colorElegido,
+                    _controladorTextoCita.text, _incioCita, _finalCita, _todoDia),
                 child: const Text('Guardar'),
               ),
             ],
