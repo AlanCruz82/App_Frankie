@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:frankie/pantallas/cuarta.dart';
+import 'package:frankie/pantallas/wipersonal.dart';
 import 'pantallas/principal.dart';  // Asegúrate de que FirstScreen esté correctamente definida
 import 'pantallas/segunda.dart';    // Asegúrate de que SecondScreen esté correctamente definida
 import 'pantallas/calc.dart';       // Asegúrate de que CalcScreen esté correctamente importada
@@ -16,6 +18,8 @@ class _MainScreenState extends State<MainScreen> {
     Principal(),
     Secundaria(),
     Tercera(),
+    Cuarta(),
+    Wipersonal(),
     Calculadora(),
   ];
 
@@ -35,6 +39,8 @@ class _MainScreenState extends State<MainScreen> {
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "Principal"),
           BottomNavigationBarItem(icon: Icon(Icons.map), label: "Geolocalizador"),
           BottomNavigationBarItem(icon: Icon(Icons.book), label: "Agenda"),
+          BottomNavigationBarItem(icon: Icon(Icons.timelapse_outlined), label: "Contador"),
+          BottomNavigationBarItem(icon: Icon(Icons.map), label: "MapAragón"),
           BottomNavigationBarItem(icon: Icon(Icons.calculate), label: "Calculadora"),
         ],
       ),

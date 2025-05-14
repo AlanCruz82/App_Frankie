@@ -57,9 +57,9 @@ class TerceraPantallaState extends State<Tercera> {
                   initialDateTime: DateTime(2024, 8, 15, 9, 41),
                   currentDateTime: DateTime.now(),
                   mode: CupertinoCalendarMode.dateTime,
-                  timeLabel: 'Start',
-                  onDateTimeChanged: (date) {
-                    _incioCita = date; //Asignamos la fecha de inicio a la cita
+                  timeLabel: 'Inicio',
+                  onDateTimeChanged: (startdate) {
+                    _incioCita = startdate; //Asignamos la fecha de inicio a la cita
                   },
                 ),
                 Padding(
@@ -72,9 +72,9 @@ class TerceraPantallaState extends State<Tercera> {
                   initialDateTime: DateTime(2024, 8, 15, 9, 41),
                   currentDateTime: DateTime(2024, 8, 15),
                   mode: CupertinoCalendarMode.dateTime,
-                  timeLabel: 'Ends',
-                  onDateTimeChanged: (date) {
-                    _finalCita = date; //Asignamos la fecha de fin a la cita
+                  timeLabel: 'Fin',
+                  onDateTimeChanged: (enddate) {
+                    _finalCita = enddate; //Asignamos la fecha de fin a la cita
                   },
                 ),
                 Padding(

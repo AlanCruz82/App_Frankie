@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "922765884321",
+    "project_id": "pomovil-11420",
+    "storage_bucket": "pomovil-11420.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:922765884321:android:0f0e59f2e3201dc83ae9e0",
+        "android_client_info": {
+          "package_name": "com.example.frankie"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBt3asAJoj6xEtJn1fS2u-_cLxosjl2eZM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
