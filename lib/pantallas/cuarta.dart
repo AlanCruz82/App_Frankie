@@ -32,7 +32,7 @@ class Cuarta extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SizedBox(
-              width: 400,
+              width: 350,
               child: Column(
                 children: [
                   TextField(

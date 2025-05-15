@@ -47,22 +47,29 @@ class Secundaria extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            TextField(
-              decoration: InputDecoration(
-                  hintText: "Tus coodernadas"
+            SizedBox(
+              width: 350,
+              child: Column(
+                children: [
+                  TextField(
+                    decoration: InputDecoration(
+                        hintText: "Tus coodernadas"
+                    ),
+                    controller: _cajaTexto,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(10),
+                  ),
+                  ElevatedButton(
+                      onPressed: (){
+                        _determinePosition().then((coordenadas){ //Obtenemos y pintamos sus coordenadas (usando el estado en string del objeto)
+                          _cajaTexto.text = "Latitud : " + coordenadas.latitude.toString() + " Longitud : " + coordenadas.longitude.toString();
+                        });
+                      },
+                      child: Text("Obtener mis coordenadas"))
+                ],
               ),
-              controller: _cajaTexto,
-            ),
-            Padding(
-              padding: EdgeInsets.all(10),
-            ),
-            ElevatedButton(
-                onPressed: (){
-                  _determinePosition().then((coordenadas){ //Obtenemos y pintamos sus coordenadas (usando el estado en string del objeto)
-                    _cajaTexto.text = "Latitud " + coordenadas.latitude.toString() + " Longitud " + coordenadas.longitude.toString();
-                  });
-                },
-                child: Text("Obtener mis coordenadas"))
+            )
           ],
         ),
       ),
