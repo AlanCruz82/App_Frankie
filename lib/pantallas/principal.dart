@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Principal extends StatefulWidget {
   @override
@@ -9,6 +10,23 @@ class _PrincipalState extends State<Principal> {
   bool _showText = true;
   double _iconSize = 50.0;
 
+  //Nombre del usuario
+  String? _nombreUsuario = "";
+
+  //Inicamos el estado de la pantalla con el nombre del usuario
+  @override
+  void initState() {
+    super.initState();
+    obtenerNombreUsuario();
+  }
+
+  //Obtenemos el nombre del usuario
+  Future<void> obtenerNombreUsuario() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _nombreUsuario = prefs.getString('nombre');
+    });
+  }
   void _onButtonPressed() {
     setState(() {
       if (_showText) {
@@ -32,6 +50,7 @@ class _PrincipalState extends State<Principal> {
           children: [
             if (_showText) Text("Presiona el botón"),
             if (!_showText) Icon(Icons.account_balance_wallet_sharp, size: _iconSize, color: Colors.blue),
+            Text("Bienvenido " + _nombreUsuario.toString()),
           ],
         ),
       ),

@@ -5,6 +5,7 @@ import 'pantallas/principal.dart';  // Asegúrate de que FirstScreen esté corre
 import 'pantallas/segunda.dart';    // Asegúrate de que SecondScreen esté correctamente definida
 import 'pantallas/calc.dart';       // Asegúrate de que CalcScreen esté correctamente importada
 import 'pantallas/tercera.dart';
+import 'pantallas/ingresar.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -13,15 +14,32 @@ class MainScreen extends StatefulWidget {
 
 //Lista de widgets que almacenan nuestras pantallas utilizadas
 class _MainScreenState extends State<MainScreen> {
-  int _currentIndex = 0;  // Indice inicial
-  final List<Widget> _screens = [
-    Principal(),
-    Secundaria(),
-    Tercera(),
-    Cuarta(),
-    Wipersonal(),
-    Calculadora(),
-  ];
+
+  int _currentIndex = 4;  // Indice inicial
+  late List<Widget> _screens;
+
+  @override
+  void initState() {
+    super.initState();
+
+    //Inicalizamos el estado de cada pantalla, pasandole la funcion para cambiar de pantalla a la pantalla del login
+    _screens = [
+      Principal(),
+      Secundaria(),
+      Tercera(),
+      Cuarta(),
+      Ingresar(OnPantallaBienvenida: _ingresoExitoso),
+      Wipersonal(),
+      Calculadora(),
+    ];
+  }
+
+  //Método para regresar a la pantalla de bienvenida si el usuario se logeo exitosamente
+  void _ingresoExitoso(){
+    setState(() {
+      _currentIndex = 0;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +58,7 @@ class _MainScreenState extends State<MainScreen> {
           BottomNavigationBarItem(icon: Icon(Icons.map), label: "Geolocalizador"),
           BottomNavigationBarItem(icon: Icon(Icons.book), label: "Agenda"),
           BottomNavigationBarItem(icon: Icon(Icons.timelapse_outlined), label: "Contador"),
+          BottomNavigationBarItem(icon: Icon(Icons.login), label: "Login"),
           BottomNavigationBarItem(icon: Icon(Icons.map), label: "MapAragón"),
           BottomNavigationBarItem(icon: Icon(Icons.calculate), label: "Calculadora"),
         ],
