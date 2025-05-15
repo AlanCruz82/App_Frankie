@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:frankie/pantallas/cuarta.dart';
 import 'package:frankie/pantallas/wipersonal.dart';
-import 'pantallas/principal.dart';  // Asegúrate de que FirstScreen esté correctamente definida
-import 'pantallas/segunda.dart';    // Asegúrate de que SecondScreen esté correctamente definida
-import 'pantallas/calc.dart';       // Asegúrate de que CalcScreen esté correctamente importada
+import 'pantallas/principal.dart';
+import 'pantallas/segunda.dart';
+import 'pantallas/calc.dart';
 import 'pantallas/tercera.dart';
 import 'pantallas/ingresar.dart';
 

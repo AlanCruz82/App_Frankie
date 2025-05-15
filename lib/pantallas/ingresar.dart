@@ -7,7 +7,7 @@ class Ingresar extends StatelessWidget {
   //Texto del textfield
   TextEditingController _nombre = TextEditingController();
   final Function OnPantallaBienvenida;
-
+  //Obligamos a que la instancia de esta pantalla necesite una función que nos permita cambiar a la pantalla principal (desde navegador.dart)
   Ingresar({required this.OnPantallaBienvenida, Key? key}) : super(key: key);
 
   //Método para guardar el nombre del usuario
