@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:cupertino_calendar_picker/cupertino_calendar_picker.dart';
 import 'package:flex_color_picker/flex_color_picker.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 //Heredamos de un Stateful para poder modificar los colores
 class Tercera extends StatefulWidget {
@@ -11,20 +12,23 @@ class Tercera extends StatefulWidget {
 
 //Herencia del Stateful
 class TerceraPantallaState extends State<Tercera> {
+  final db = FirebaseFirestore.instance;
   Color _color = Colors.blue; //Color por defecto
   int _colorElegido = 0;
-  TextEditingController _controladorTextoCita = TextEditingController();
-  DateTime _incioCita = DateTime.now();
-  DateTime _finalCita = DateTime.now();
+  TextEditingController _nombreCita = TextEditingController();
+  DateTime? _incioCita = DateTime.now();
+  DateTime? _finalCita = DateTime.now();
   bool? _todoDia = false;
 
-  void agendarCita(context, colorSeleccionado, encabezadoCita, fechaInicio, fechaFin, todoElDia){
-    print("Titulo cita " + encabezadoCita);
-    print("Inicio cita " + fechaInicio.toString());
-    print("Final cita " + fechaFin.toString());
-    print("Color " + colorSeleccionado.toString());
-    print("Todo el día " + todoElDia.toString());
-    Navigator.pop(context, 'OK');
+  //Metodo para guardar los datos de la cita en firebase con los valores del usuario
+  void agendarCita() async{
+    Map<String,dynamic> propiedadesCita = {
+      'fechaInicio' : _incioCita,
+      'fechaFin' : _finalCita,
+      'color' : _colorElegido,
+      'todoDia' : _todoDia
+    };
+    await db.collection("Eventos").doc(_nombreCita.text).set(propiedadesCita);
   }
 
   @override
@@ -45,7 +49,7 @@ class TerceraPantallaState extends State<Tercera> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 TextField(
-                  controller: _controladorTextoCita,
+                  controller: _nombreCita,
                   decoration: InputDecoration(
                     labelText : "Titulo de cita",
                   ),
@@ -136,8 +140,18 @@ class TerceraPantallaState extends State<Tercera> {
                 child: const Text('Cancelar'),
               ),
               TextButton(
-                onPressed: () => agendarCita(context, _colorElegido,
-                    _controladorTextoCita.text, _incioCita, _finalCita, _todoDia),
+                onPressed: (){
+                  agendarCita();
+                  //Limpiamos los campos de las propiedades de la cita
+                  _nombreCita.text = "";
+                  _incioCita = DateTime.now();
+                  _finalCita = DateTime.now();
+                  _colorElegido = 0;
+                  _todoDia = false;
+
+                  //Cerramos el alertDialog donde mostramos los detalles de la cita
+                  Navigator.pop(context, 'OK');
+                },
                 child: const Text('Guardar'),
               ),
             ],
