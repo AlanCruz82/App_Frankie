@@ -32,7 +32,7 @@ class TerceraPantallaState extends State<Tercera> {
     return Scaffold(
       body: Container(
         child: SfCalendar(
-          view: CalendarView.month,
+          view: CalendarView.week,
         ),
       ),
       floatingActionButton: FloatingActionButton(
