@@ -2,10 +2,16 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+class Cuarta extends StatefulWidget {
+  @override
+  CuartaPantallaState createState() => CuartaPantallaState();
+}
+
 //Herencia del Stateful
-class Cuarta extends StatelessWidget {
+class CuartaPantallaState extends State<Cuarta>{
   TextEditingController _contador = TextEditingController();
   final db = FirebaseFirestore.instance;
+  String _ultimoContador = "";
 
   //Generamos un número al azar utilizando Ramdon
   void numeroAleatorio() async{
@@ -17,8 +23,14 @@ class Cuarta extends StatelessWidget {
     await db.collection("Contadores").doc("contador").set({
       'numero' : numeroAzar,
     });
-  }
 
+    //Obtenemos el ultimo valor dado al número en firebase y lo pintamos en el Text
+    DocumentSnapshot contador = await db.collection("Contadores").doc("contador").get();
+    Map<String,dynamic> numero = contador.data() as Map<String,dynamic>;
+    setState(() {
+      _ultimoContador = "Ultimo número sincronizado : " + numero['numero'].toString();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,6 +56,7 @@ class Cuarta extends StatelessWidget {
                   Padding(
                     padding: EdgeInsets.all(10),
                   ),
+                  Text(_ultimoContador),
                   ElevatedButton(onPressed: (){
                     numeroAleatorio();
                   },
