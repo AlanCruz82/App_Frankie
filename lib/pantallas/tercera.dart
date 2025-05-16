@@ -12,6 +12,14 @@ class Tercera extends StatefulWidget {
 
 //Herencia del Stateful
 class TerceraPantallaState extends State<Tercera> {
+
+  //Iniciamos el estado del calendario con las citas previamente agendadas
+  @override
+  void initState(){
+    super.initState();
+    obtenerCitas();
+  }
+
   final db = FirebaseFirestore.instance;
   Color _color = Colors.blue; //Color por defecto
   int _colorElegido = 0;
@@ -19,6 +27,7 @@ class TerceraPantallaState extends State<Tercera> {
   DateTime? _incioCita = DateTime.now();
   DateTime? _finalCita = DateTime.now();
   bool? _todoDia = false;
+  List<Meeting> _citas = [];
 
   //Metodo para guardar los datos de la cita en firebase con los valores del usuario
   void agendarCita() async{
@@ -28,7 +37,30 @@ class TerceraPantallaState extends State<Tercera> {
       'color' : _colorElegido,
       'todoDia' : _todoDia
     };
+    //Guardamos la cita en la coleccion 'Eventos' con el nombre de la cita como nombre del documento
     await db.collection("Eventos").doc(_nombreCita.text).set(propiedadesCita);
+  }
+
+  //Metodo para obtener las citas previamente agendadas y almacenadas en firebase
+  void obtenerCitas() async{
+    //Obtenemos las citas almacenadas en nuestra coleccion 'Eventos' en firebase
+    QuerySnapshot eventos = await db.collection('Eventos').get();
+    for(DocumentSnapshot cita in eventos.docs){
+      //Vamos recorriendo cada cita/doc y construyendo la cita con sus detalles para despues pasarselos a getDataSource
+      Map<String,dynamic> propiedadesCita = cita.data() as Map<String,dynamic>;
+      String tituloCita = cita.id;
+      DateTime inicioCita = (propiedadesCita['fechaInicio'] as Timestamp).toDate();
+      DateTime finCita = (propiedadesCita['fechaFin'] as Timestamp).toDate();
+      Color colorCita = Color(propiedadesCita['color']);
+      bool todoElDia = propiedadesCita['todoDia'];
+
+      //Vamos generando una nueva instancia de tipo Meeting para cada cita previamente guardada en firebase
+      _citas.add(new Meeting(tituloCita, inicioCita, finCita, colorCita, todoElDia));
+    }
+    //Refrescamos el estado de la pantalla para mostrar las citas agendadas
+    setState(() {
+
+    });
   }
 
   @override
@@ -36,7 +68,10 @@ class TerceraPantallaState extends State<Tercera> {
     return Scaffold(
       body: Container(
         child: SfCalendar(
-          view: CalendarView.week,
+          view: CalendarView.month,
+          dataSource: MeetingDataSource(_getDataSource(_citas)), //Le mandamos las citas agendadas que obtuvimos de firebase para mostrarlas en el calendario
+            monthViewSettings: MonthViewSettings(showAgenda: true), //Ocupamos la vista tipo agenda para ver las citas agendadas
+                                                                    //Si no solo se ven puntitos de color debajo de la fecha
         ),
       ),
       floatingActionButton: FloatingActionButton(
@@ -61,7 +96,7 @@ class TerceraPantallaState extends State<Tercera> {
                 CupertinoCalendarPickerButton(
                   minimumDateTime: DateTime(2024, 7, 10),
                   maximumDateTime: DateTime(2025, 7, 10),
-                  initialDateTime: DateTime(2024, 8, 15, 9, 41),
+                  initialDateTime: DateTime.now(),
                   currentDateTime: DateTime.now(),
                   mode: CupertinoCalendarMode.dateTime,
                   timeLabel: 'Inicio',
@@ -76,8 +111,8 @@ class TerceraPantallaState extends State<Tercera> {
                 CupertinoCalendarPickerButton(
                   minimumDateTime: DateTime(2024, 7, 10),
                   maximumDateTime: DateTime(2025, 7, 10),
-                  initialDateTime: DateTime(2024, 8, 15, 9, 41),
-                  currentDateTime: DateTime(2024, 8, 15),
+                  initialDateTime: DateTime.now(),
+                  currentDateTime: DateTime.now(),
                   mode: CupertinoCalendarMode.dateTime,
                   timeLabel: 'Fin',
                   onDateTimeChanged: (enddate) {
@@ -160,4 +195,52 @@ class TerceraPantallaState extends State<Tercera> {
       ),
     );
   }
+}
+
+//Para poder reflejar las citas dentro del SfCalendario ocupamos su propiedad DataSource, la cual debe
+//recibir la colección de citas con sus propiedades/detalles dadas por el usuario
+// [https://pub.dev/packages/syncfusion_flutter_calendar#add-data-source]
+List<Meeting> _getDataSource(List<Meeting> citasAgendadas) {
+  return citasAgendadas;
+}
+
+class MeetingDataSource extends CalendarDataSource {
+  MeetingDataSource(List<Meeting> source){
+    appointments = source;
+  }
+
+  @override
+  DateTime getStartTime(int index) {
+    return appointments![index].from;
+  }
+
+  @override
+  DateTime getEndTime(int index) {
+    return appointments![index].to;
+  }
+
+  @override
+  String getSubject(int index) {
+    return appointments![index].eventName;
+  }
+
+  @override
+  Color getColor(int index) {
+    return appointments![index].background;
+  }
+
+  @override
+  bool isAllDay(int index) {
+    return appointments![index].isAllDay;
+  }
+}
+
+class Meeting {
+  Meeting(this.eventName, this.from, this.to, this.background, this.isAllDay);
+
+  String eventName;
+  DateTime from;
+  DateTime to;
+  Color background;
+  bool isAllDay;
 }
